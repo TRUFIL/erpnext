@@ -17,3 +17,10 @@ cur_frm.cscript.onload = function() {
 	cur_frm.add_fetch('item_code', 'stock_uom', 'uom');
 	cur_frm.add_fetch('item_code', 'description', 'description');
 }
+
+// Added for selecting non bundled Items
+cur_frm.fields_dict['items'].grid.get_field("item_code").get_query = function() {
+	return{
+		query: 	"erpnext.selling.doctype.product_bundle.product_bundle.get_non_bundled_item_code"
+	}
+}

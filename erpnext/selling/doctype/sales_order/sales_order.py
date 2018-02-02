@@ -570,6 +570,7 @@ def make_sales_invoice(source_name, target_doc=None, ignore_permissions=False):
 			"doctype": "Sales Invoice",
 			"field_map": {
 				"party_account_currency": "party_account_currency"
+				"name": "sales_order" #### Added on 16-01-2018
 			},
 			"validation": {
 				"docstatus": ["=", 1]

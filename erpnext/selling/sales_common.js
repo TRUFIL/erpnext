@@ -41,6 +41,8 @@ erpnext.selling.SellingController = erpnext.TransactionController.extend({
 		me.frm.set_query('contact_person', erpnext.queries.contact_query);
 		me.frm.set_query('customer_address', erpnext.queries.address_query);
 		me.frm.set_query('shipping_address_name', erpnext.queries.address_query);
+		// Added for selecting Company Address
+		me.frm.set_query('company_address', erpnext.queries.company_address_query);
 
 		if(this.frm.fields_dict.taxes_and_charges) {
 			this.frm.set_query("taxes_and_charges", function() {
@@ -67,7 +69,8 @@ erpnext.selling.SellingController = erpnext.TransactionController.extend({
 			this.frm.set_query("item_code", "items", function() {
 				return {
 					query: "erpnext.controllers.queries.item_query",
-					filters: {'is_sales_item': 1}
+					//filters: {'is_sales_item': 1} removed and added for selecting Product Bundle only
+					filters: {'is_sales_item': 1, 'is_product_bundle': 1}
 				}
 			});
 		}

@@ -122,7 +122,10 @@ class SellingController(StockController):
 			throw(_("Total allocated percentage for sales team should be 100"))
 
 	def validate_order_type(self):
-		valid_types = ["Sales", "Maintenance", "Shopping Cart"]
+		#### JK >>>>
+		# valid_types = ["Sales", "Maintenance", "Shopping Cart"]
+		valid_types = ["Services","Sales", "Maintenance", "Shopping Cart"]
+		# JK <<<<
 		if not self.order_type:
 			self.order_type = "Sales"
 		elif self.order_type not in valid_types:

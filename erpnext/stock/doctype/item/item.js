@@ -124,7 +124,15 @@ frappe.ui.form.on("Item", {
 	},
 
 	is_fixed_asset: function(frm) {
-		frm.set_value("is_stock_item", frm.doc.is_fixed_asset ? 0 : 1);
+		// JK >>>>
+		//frm.set_value("is_stock_item", frm.doc.is_fixed_asset ? 0 : 1);
+		if (frm.doc.is_fixed_asset) {
+			if (frm.doc.item_group == "Bundle") {
+				frappe.msgprint(__('Fixed Asset cannot be a part of Item Group {0}'.format("Bundle")));
+				frappe.validated = 0;
+			}
+			frm.set_value("is_stock_item", 0); // JK <<<<
+		}
 	},
 
 	page_name: frappe.utils.warn_page_name_change,
@@ -138,6 +146,12 @@ frappe.ui.form.on("Item", {
 
 	is_stock_item: function(frm) {
 		if(!frm.doc.is_stock_item) {
+			// JK >>>>
+			if (frm.doc.item_group == "Bundle") {
+				frappe.msgprint(__('Stock Item cannot be a part of Item Group Bundled'));
+				frappe.validated = 0;
+			}
+			frm.set_value("default_warehouse", ""); // JK <<<<
 			frm.set_value("has_batch_no", 0);
 			frm.set_value("create_new_batch", 0);
 			frm.set_value("has_serial_no", 0);
@@ -159,7 +173,20 @@ frappe.ui.form.on("Item", {
 		if (frm.doc.default_warehouse && !frm.doc.website_warehouse){
 			frm.set_value("website_warehouse", frm.doc.default_warehouse);
 		}
-	}
+	},
+
+	item_group: function(frm) {
+		if (frm.doc.item_group == "Bundle") { 
+			if (frm.doc.is_stock_item || frm.doc.is_fixed_asset || frm.doc.is_purchase_item) {
+				frappe.msgprint(__('Bundled Item cannot be a Stock Item or Fixed Asset or Purchase Item'));
+				frappe.validated = 0;
+			} else {
+				frm.set_value("is_product_bundle", 1);
+				frm.set_value("default_warehouse","");
+			}
+		}
+	},
+	
 });
 
 frappe.ui.form.on('Item Reorder', {

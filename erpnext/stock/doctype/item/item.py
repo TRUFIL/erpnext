@@ -105,6 +105,10 @@ class Item(WebsiteGenerator):
 				from `tabWebsite Item Group`
 				where parentfield='website_item_groups' and parenttype='Item' and parent=%s""", self.name)
 
+		#### Start Modification >>>>
+		self.validate_product_bundle()
+		#### End Modification <<<<
+
 	def on_update(self):
 		invalidate_cache_for_item(self)
 		self.validate_name_with_item_group()
@@ -687,6 +691,19 @@ class Item(WebsiteGenerator):
 
 			validate_item_variant_attributes(self, args)
 
+	#### Start Modification >>>>
+	def validate_product_bundle(self):
+		if (self.is_product_bundle):
+			if self.is_stock_item:
+				frappe.throw(_("product bundle must be a non-stock item."))
+
+			if self.is_fixed_asset:
+				frappe.throw(_("product bundle must be a non-asset item."))
+
+			if self.is_purchase_item:
+				frappe.throw(_("product bundle must be a non-purchase item."))
+	#### End Modification <<<<
+	
 def get_timeline_data(doctype, name):
 	'''returns timeline data based on stock ledger entry'''
 	out = {}
