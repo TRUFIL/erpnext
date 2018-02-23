@@ -102,6 +102,13 @@ class SalesInvoice(SellingController):
 		self.update_timesheet_billing_for_project()
 		self.set_status()
 
+		# As a company policy default ledger is not allowed for creating Invoice
+		self.check_debit_to()
+
+	def check_debit_to(self):
+		if "Debtors" in self.debit_to:
+			frappe.throw(_("Please create appropriate ledger and attach it with the customer before creating invoice"))			
+
 	def before_save(self):
 		set_account_for_mode_of_payment(self)
 
