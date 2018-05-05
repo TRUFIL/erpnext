@@ -44,6 +44,9 @@ erpnext.accounts.SalesInvoiceController = erpnext.selling.SellingController.exte
 
 		this.frm.toggle_reqd("due_date", !this.frm.doc.is_return);
 
+		// Added for MIS 
+		this.frm.toggle_reqd("return_reason", this.frm.doc.is_return? 1: 0);
+
 		this.show_general_ledger();
 
 		if(doc.update_stock) this.show_stock_ledger();
@@ -101,6 +104,15 @@ erpnext.accounts.SalesInvoiceController = erpnext.selling.SellingController.exte
 		}
 
 		this.set_default_print_format();
+	},
+
+	// Added for updating the Sales Order
+	return_reason: function(doc) {
+		if (this.frm.doc.return_reason == "Customer Rejection" || this.frm.doc.return_reason == "Short Supply" || this.frm.doc.return_reason == "Error in Invoice") {
+			this.frm.set_value("update_sales_order", 1);
+		} else {
+			this.frm.set_value("update_sales_order", 0);
+		}
 	},
 
 	on_submit: function(doc, dt, dn) {

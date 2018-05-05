@@ -38,7 +38,7 @@ class SalesInvoice(SellingController):
 			'target_parent_dt': 'Sales Order',
 			'target_parent_field': 'per_billed',
 			'source_field': 'amount',
-			'join_field': 'so_detail',
+			# 'join_field': 'so_detail',
 			'percent_join_field': 'sales_order',
 			'status_field': 'billing_status',
 			'keyword': 'Billed',
@@ -102,7 +102,7 @@ class SalesInvoice(SellingController):
 		self.update_timesheet_billing_for_project()
 		self.set_status()
 
-		# As a company policy default ledger is not allowed for creating Invoice
+		# As a Trufil policy default ledger is not allowed for creating Invoice
 		self.check_debit_to()
 
 	def check_debit_to(self):
@@ -226,6 +226,25 @@ class SalesInvoice(SellingController):
 				'extra_cond': """ and exists (select name from `tabSales Invoice` where name=`tabSales Invoice Item`.parent and update_stock=1 and is_return=1)"""
 			}
 		])
+		# Update Sales Order in case of Return/Credit Note is generated
+		if cint(self.update_sales_order):
+			self.status_updater.extend([{
+				'source_dt': 'Sales Invoice Item',
+				'target_dt': 'Sales Order Item',
+				'join_field': 'so_detail',
+				'target_field': 'billed_amt',
+				'target_ref_field': 'amount',
+				'target_parent_dt': 'Sales Order',
+				'target_parent_field': 'per_billed',
+				'source_field': 'amount',
+				# 'join_field': 'so_detail',
+				'percent_join_field': 'sales_order',
+				'status_field': 'billing_status',
+				'keyword': 'Billed',
+				'overflow_type': 'billing'
+			}
+		])
+
 
 	def check_credit_limit(self):
 		from erpnext.selling.doctype.customer.customer import check_credit_limit
