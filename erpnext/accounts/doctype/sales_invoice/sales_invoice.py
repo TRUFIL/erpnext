@@ -54,6 +54,10 @@ class SalesInvoice(SellingController):
 			self.indicator_color = "green"
 			self.indicator_title = _("Paid")
 
+	def before_naming(self):
+		if (self.is_new and self.is_return):
+			self.naming_series = "SIR-.####"
+
 	def validate(self):
 		super(SalesInvoice, self).validate()
 		self.validate_auto_set_posting_time()

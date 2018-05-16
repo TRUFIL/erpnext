@@ -64,6 +64,10 @@ class DeliveryNote(SellingController):
 			'extra_cond': """ and exists (select name from `tabDelivery Note` where name=`tabDelivery Note Item`.parent and is_return=1)"""
 		}]
 
+	def before_naming(self):
+		if (self.is_new and self.is_return):
+			self.naming_series = "DNR-.####"
+
 	def before_print(self):
 		def toggle_print_hide(meta, fieldname):
 			df = meta.get_field(fieldname)
